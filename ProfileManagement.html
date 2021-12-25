@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+
+    /* #region Main page */
+    #header{
+        color: red;
+    }
+    #part_action{
+        display: flex;
+    }
+    #part_action{
+        height: 200px;
+    }
+    #box_action{
+        width: 40%;
+    }
+    #box_search{
+        width: 59%;
+        margin-left: 10px;
+    }
+    #border_box_action, #border_box_search{        
+        border: rgb(0, 183, 255) 1px solid;
+        height: 90px;
+        padding-top: 45px;
+        padding-left: 220px;
+    }
+    #border_box_action button{
+        width: 90px;
+        height: 40px;
+    }
+    #border_box_search{
+        display: -webkit-box;
+        padding-left: 10px;
+    }    
+    #box_search_item1{
+        margin-right: 50px;        
+    }
+    #box_search_item2{
+        margin-right: 50px;
+        margin-left: 50px;
+        border:rgb(0, 183, 255) 1px solid;        
+    }
+    table{
+        width: 100%;
+    }
+    table, thead, td{       
+        height: auto;
+        border: 1px solid rgb(0, 183, 255);
+        border-collapse: collapse;
+    }
+    /* #endregion */
+
+    /* #region popup */
+    .popbg {
+        display: block;
+        position: absolute;
+        background: rgba(255, 255, 255, 0.9);
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        overflow: auto;
+        display: none;
+    }
+
+    .popup {
+        display: block;
+        position: absolute;
+        width: 500px;
+        min-height: 300px;
+        top: 15%;
+        left: 36%;
+        background: #fff;
+        display: none;
+        margin: 0 auto;
+        border: 1px black solid;
+    }
+
+    .pop-shadow {
+        -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, .4);
+        box-shadow: 0 0 40px rgba(0, 0, 0, .4);
+        background: #fff;
+        background-clip: padding-box;
+        border: 1px solid #e5e5e5;
+        border: rgba(0, 0, 0, 0);
+        outline: 0;
+    }
+
+    .pop-header {
+        font-size: 30px;
+        font-weight: 500;
+        color: grey;
+        border: #ddd solid 1px;
+        position: relative;
+        display: block;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pop-header:after {
+        clear: both;
+        height: 0px;
+        display: block;
+        content: "";
+    }
+
+    .left {
+        float: left;
+        margin-left: 200px;
+    }
+
+    .right {
+        float: right;
+    }
+
+    .pop-title {
+        display: block;
+        padding: 10px;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .pop-control {
+        display: block;
+        padding: 10px;
+    }
+
+    .pop-close {
+        display: block;
+        font-weight: bold;
+        font-family: arial;
+        cursor: pointer;
+        display: inline-block;
+        color: #999;
+        font-size: 14px;
+    }
+
+    .pop-close:hover {
+        color: #444;
+    }
+
+    .main-content {
+        display: block;
+        font-family: 'Roboto', sans-serif;
+        padding: 5px 10px;
+    }
+
+    .main-content h1 {
+        font-size: 28px;
+    }
+
+    .main-content p {
+        font-size: 16px;
+    }
+
+    /* style drop-zone */
+    .drag-area {
+        border: 2px dashed grey;
+        border-radius: 5px;
+        margin: 0px 40px;
+        color: grey;
+        min-height: 200px;
+    }
+
+    .active {
+        border: 2px dashed orange;
+    }
+
+    .drag-area .icon {
+        font-size: 15px;
+        color: grey;
+    }
+
+    .drag-area button {
+        font-size: 15px;
+        font-weight: 500;
+        border: none;
+        outline: none;
+        background: #fff;
+        color: #5256ad;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #icon-delete {
+        border: none;
+    }
+
+    .group-button {
+        float: right;
+        margin-top: 20px;
+    }
+
+    .group-button button {
+        border: rgb(217, 217, 217);
+        border-radius: 5px;
+        width: 100px;
+        height: 40px;
+        color: rgb(127, 127, 127);
+        background-color: #fff;
+    }
+
+    .group-button button:hover {
+        background-color: rgb(217, 217, 217);
+    }
+
+    /* #endregion */
+</style>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>Document</title>
+</head>
+<body ng-app="MyApp" ng-controller="MyController" >
+    <div id="header">
+        <h3>StarLord | Profile Management</h3>
+    </div>
+    <div id="part_action">
+        <div id="box_action">
+            <h4 class="title_box">Action</h4>
+            <div id="border_box_action">
+                <button id="btn_add">Add Profile</button>
+            </div>
+        </div>
+        <div id="box_search">
+            <h4 class="title_box">Search</h4>
+            <div id="border_box_search">
+                <input class="box_search_item1" type="text" placeholder="Enter search info" ng-model="keySearch">            
+                <div class="box_search_item2">
+                    <select ng-click="chooseOption()" ng-model="selectedOption">
+                        <option ng-repeat="option in Options" value="{{option.Id}}">
+                            {{option.Name}}
+                        </option>
+                    </select>
+                </div>        
+                <button class="box_search_item3" ng-click="search()">Search</button>
+            </div>
+        </div>
+    </div>
+    <div id="part_profile">
+        <h4 class="title_box">Profile</h4>
+        <!-- <div ng-app="MyTable" ng-controller="MyTableController"> -->
+        <div>
+            <table>
+                <thead>
+                    <td>Code</td>
+                    <td>Staff Name</td>
+                    <td>Department</td>
+                    <td>Job</td>
+                    <td>Actions</td>
+                </thead>
+                <tr ng-repeat="person in People">
+                        <td>{{person.code}}</td>       
+                        <td>{{person.name}}</td>
+                        <td>{{person.department}}</td>
+                        <td>{{person.job}}</td>
+                        <td>
+                            <a href="" id="link-view" ng-click="view(person)">View</a>
+                            <a href="" id="link-edit" ng-click="edit(person)">Edit</a>
+                            <a href="" id="link-delete" ng-click="delete(person)">Delete</a>                           
+                        </td>         
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- POP up background-->
+    <div id="pop-bg" class="popbg">
+        <div id="popWindow" class="popup pop-shadow">
+            <div class="pop-wrapper">
+                <header>
+                    <div class="pop-header" id="pop-drag">
+                        <div class="left pop-title">
+                            Profile
+                        </div>
+                        <div class="right pop-control">
+                            <span class="pop-close" id="close-pop">X</span>
+                        </div>
+                    </div>
+                </header>
+                <div class="main-content">
+                    <div class="drag-area">
+                        <div class="key-infor">
+                            <div class="key-name">Code :</div>
+                            <input type="text" name="" id="code_input">
+                        </div><br/>
+                        <div class="key-infor">
+                            <div class="key-name">Name :</div>
+                            <input type="text" name="" id="name_input">
+                        </div><br/>
+                        <div class="key-infor">
+                            <div class="key-name">Departmant :</div>
+                            <input type="text" name="" id="department_input">
+                        </div><br/>
+                        <div class="key-infor">
+                            <div class="key-name">Job :</div>
+                            <input type="text" name="" id="job_input">
+                        </div><br/>                       
+                    </div>
+                    <div class="group-button">
+                        <button ng-click="save()" id="btn_save">Save</button>
+                        <button ng-click="clear()" id="btn_clear">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+</body>
+</html>
+<script>
+    var Person = {
+        code : '',
+        name : '',
+        department: '',
+        job : ''
+    }
+
+    People = [ 
+        {
+            code : '001',
+            name : 'Phong',
+            department: 'Dep01',
+            job : 'Leader'
+        },{
+            code : '002',
+            name : 'Pumpkin',
+            department: 'Dep02',
+            job : 'Dev'
+        }
+    ];
+
+    var option ='';
+
+    //#region setup popup 
+    $(document).ready(function () {
+        // Show popup
+        $('#btn_add').click(function () {
+            $('#pop-bg').show();
+            $('#popWindow').show();
+            $('#btn_clear').show();
+            $('#btn_save').show();
+            $('.key-infor input').prop('disabled', false);
+            $('#code_input').val('');
+            $('#name_input').val('');
+            $('#department_input').val('');
+            $('#job_input').val('');
+        });
+
+        // Close Popup
+        $('#close-pop').click(function () {
+            $('#pop-bg').hide();
+            $('#popWindow').hide();
+        });
+
+    });
+    //#endregion
+
+    var app = angular.module('MyApp', [])
+        app.controller('MyController',['$scope', function ($scope) {
+            $scope.Options = [{Id: 0,Name: 'All' }, {Id: 1,Name: 'Code'}, {Id: 2,Name: 'Name'}, 
+                              {Id: 3,Name: 'Departmant'}, {Id : 4,Name : 'Job'}];
+
+            $scope.People = [];
+            $scope.People.push(...People);
+
+            $scope.Person = {code : '',name : '',department: '',job : ''}
+
+            $scope.mode = '';
+
+            $scope.chooseOption= function (){
+                console.log($scope.selectedOption);
+            }
+            
+            $scope.search = function() {
+                console.log($scope.keySearch); 
+                $scope.People = [];
+                if($scope.selectedOption == 1){                     
+                    //console.log("code");
+                    People.forEach(e => {
+                        if(e.code.toString().includes($scope.keySearch))
+                            $scope.People.push(e);
+                    });
+
+                }else if($scope.selectedOption == 2){
+                    //console.log("name");
+
+                }else if($scope.selectedOption== 3){
+                    //console.log("department");
+
+                }else if($scope.selectedOption== 4){
+                    //console.log("job");
+                }else{
+                    $scope.People.push(...People);
+                }
+            }
+            
+            $scope.save = function() {                
+                if($scope.mode !== 'edit'){
+                    let newMember = Person;
+                    newMember.code = $('#code_input').val().toString();
+                    newMember.name = $('#name_input').val().toString();
+                    newMember.department =  $('#department_input').val().toString();
+                    newMember.job =  $('#job_input').val().toString();
+
+                    People.push(newMember);
+                    $scope.People = [];
+                    $scope.People.push(...People);
+                }else{
+                    let index = -1;
+                    for(let i =0; i < People.length; i++){
+                        if(People[i].code == $scope.Person.code) index = i;
+                    }
+                    if(index>=0){
+                        People[index].name = $('#name_input').val().toString();
+                        People[index].department = $('#department_input').val().toString();
+                        People[index].job = $('#job_input').val().toString();
+
+                        $scope.People = [];
+                        $scope.People.push(...People);
+                    } else alert('not found member to edit');
+                }
+
+                $scope.mode = '';   //reset mode for next turn          
+            }
+
+            $scope.view = function(person) {
+                $('#pop-bg').show();
+                $('#popWindow').show();
+                $('#code_input').val(person.code);
+                $('#name_input').val(person.name);
+                $('#department_input').val(person.department);
+                $('#job_input').val(person.job);
+
+                $('.key-infor input').prop('disabled', true);
+                $('#btn_clear').hide();
+                $('#btn_save').hide();
+            }
+
+            $scope.edit = function(person) {
+                $('#pop-bg').show();
+                $('#popWindow').show();
+                $('#code_input').val(person.code);
+                $('#name_input').val(person.name);
+                $('#department_input').val(person.department);
+                $('#job_input').val(person.job);
+               
+                $('.key-infor input').prop('disabled', false);
+                $('#code_input').prop('disabled', true);
+                $('#btn_clear').show();
+                $('#btn_save').show();
+                $scope.mode = 'edit';
+                $scope.Person = person;
+            }
+
+            $scope.delete = function(person) {
+                console.log("delete member: "+person.code);
+                let index = People.indexOf(person);
+                index >=0 ? People.splice(index, 1) : alert("not found");
+                $scope.People = [];
+                $scope.People.push(...People);
+            }
+
+            $scope.clear = function() {          
+                $('#code_input').val('');
+                $('#name_input').val('');
+                $('#department_input').val('');
+                $('#job_input').val('');
+            }
+        }]);   
+</script>
